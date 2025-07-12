@@ -1,0 +1,54 @@
+import { productsAPI } from '../api/productsAPI';
+import { User } from '../interfaces/user';
+
+export interface AuthResponse {
+    id: string;
+    email: string;
+    fullName: string;
+    isActive: boolean;
+    roles: string[];
+    token: string;
+}
+
+
+const returnUserToken = (data: AuthResponse): { user: User; token: string } => {
+
+    const { token, ...user } = data;
+
+    return {
+        user,
+        token
+    }
+
+}
+
+export const authLogin = async (email: string, password: string) => {
+
+    try {
+        
+        const { data } = await productsAPI.post<AuthResponse>('/auth/login', {
+            email,
+            password
+        });
+
+        return returnUserToken(data);
+
+    } catch (error) {
+        // throw new Error('Login failed');
+        return null;
+    }
+
+}
+
+export const authCheckStatus = async () => {
+    try {
+        
+        const { data } = await productsAPI.get<AuthResponse>('/auth/check-status');
+
+        return returnUserToken(data);
+
+    } catch (error) {
+        return null;
+    }
+
+}
