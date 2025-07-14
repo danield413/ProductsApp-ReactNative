@@ -12,6 +12,8 @@ import { router } from 'expo-router';
 // import ThemedButton from '@/presentation/theme/components/ThemedButton';
 // import ThemedLink from '@/presentation/theme/components/ThemedLink';
 import { useAuthStore } from '@/presentation/auth/store/useAuthStore';
+import ThemedButton from '@/presentation/theme/components/ThemedButton';
+import ThemedLink from '@/presentation/theme/components/ThemedLink';
 import { ThemedText } from '@/presentation/theme/components/ThemedText';
 import ThemedTextInput from '@/presentation/theme/components/ThemedTextInput';
 import { useThemeColor } from '@/presentation/theme/hooks/useThemeColor';
@@ -24,8 +26,8 @@ const LoginScreen = () => {
 
   const [isPosting, setIsPosting] = useState(false);
   const [form, setForm] = useState({
-    email: '',
-    password: '',
+    email: 'test1@google.com',
+    password: 'Abc123',
   });
 
   const onLogin = async () => {
@@ -62,7 +64,7 @@ const LoginScreen = () => {
             paddingTop: height * 0.35,
           }}
         >
-          <ThemedText type="title">Ingresar</ThemedText>
+          <ThemedText style={{fontFamily: 'KanitBold', fontSize: 40, marginBottom: 10, lineHeight: 50}}>Ingresar</ThemedText>
           <ThemedText style={{ color: 'grey' }}>
             Por favor ingrese para continuar
           </ThemedText>
@@ -93,13 +95,13 @@ const LoginScreen = () => {
         <View style={{ marginTop: 10 }} />
 
         {/* Botón */}
-        {/* <ThemedButton
+        <ThemedButton
           icon="arrow-forward-outline"
           onPress={onLogin}
           disabled={isPosting}
         >
           Ingresar
-        </ThemedButton> */}
+        </ThemedButton>
 
         {/* Spacer */}
         <View style={{ marginTop: 50 }} />
@@ -113,9 +115,9 @@ const LoginScreen = () => {
           }}
         >
           <ThemedText>¿No tienes cuenta?</ThemedText>
-          {/* <ThemedLink href="/auth/register" style={{ marginHorizontal: 5 }}>
+          <ThemedLink href="/auth/register" style={{ marginHorizontal: 5 }}>
             Crear cuenta
-          </ThemedLink> */}
+          </ThemedLink>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

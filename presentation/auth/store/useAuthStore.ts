@@ -1,5 +1,6 @@
 import { authCheckStatus, authLogin } from "@/core/auth/actions/auth-actions";
 import { User } from "@/core/auth/interfaces/user";
+import { SecureStorageAdapter } from "@/helpers/adapters/secure-storage.adapter";
 import { create } from "zustand";
 
 
@@ -35,6 +36,8 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
                 user: undefined,
             });
             // LLamar al logout
+            await SecureStorageAdapter.deleteItem('token');
+
             return false;
         }
 
@@ -43,7 +46,10 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
             token,
             user,
         });
+
         // Guardar el token en AsyncStorage o SecureStore si es necesario
+        await SecureStorageAdapter.setItem('token', token);
+        
         return true;
     },
 
@@ -58,11 +64,18 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
     },
 
     checkStatus: async () => {
+
+        // if( get().user ) {
+        //     return;
+        // }
+
         const resp = await authCheckStatus();
         get().changeStatus(resp?.token, resp?.user);
     },
 
     logout: async () => {
+        await SecureStorageAdapter.deleteItem('token');
+
         set({
             status: "unauthenticated",
             token: undefined,
