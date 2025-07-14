@@ -2,28 +2,33 @@ import { authCheckStatus, authLogin } from "@/core/auth/actions/auth-actions";
 import { User } from "@/core/auth/interfaces/user";
 import { create } from "zustand";
 
+
+
 export type Status = "authenticated" | "unauthenticated" | "checking";
 
 export interface AuthState {
-    status: Status;
-    token?: string;
-    user?: User;
+  status: Status;
+  token?: string;
+  user?: User;
 
-    changeStatus: (token: string, user: User) => boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  checkStatus: () => Promise<void>;
+  logout: () => Promise<void>;
 
-    login(email: string, password: string): Promise<boolean>;
-    checkStatus: () => Promise<boolean>;
-    logout: () => Promise<void>;
+  changeStatus: (token?: string, user?: User) => Promise<boolean>;
 }
 
 export const useAuthStore = create<AuthState>()((set, get) => ({
+
     // Initial state
     status: "checking",
     token: undefined,
     user: undefined,
 
-    changeStatus: (token: string, user?: User): boolean => {
-          if (!token || !user) {
+    // Zustand Actions
+
+    changeStatus: async (token?: string, user?: User): Promise<boolean> => {
+        if (!token || !user) {
             set({
                 status: "unauthenticated",
                 token: undefined,
@@ -42,7 +47,6 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         return true;
     },
 
-    // Zustand Actions
     login: async (email: string, password: string) => {
         const response = await authLogin(email, password);
 
@@ -53,16 +57,9 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
         return false;
     },
 
-    
-
     checkStatus: async () => {
-        const response = await authCheckStatus();
-
-        if (response) {
-            return get().changeStatus(response?.token, response?.user);
-        }
-        
-        return false;
+        const resp = await authCheckStatus();
+        get().changeStatus(resp?.token, resp?.user);
     },
 
     logout: async () => {
@@ -72,4 +69,5 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
             user: undefined,
         });
     },
+
 }));
