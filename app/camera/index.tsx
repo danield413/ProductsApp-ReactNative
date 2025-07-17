@@ -7,10 +7,11 @@ import * as MediaLibrary from 'expo-media-library';
 import { router } from 'expo-router';
 import { useRef, useState } from 'react';
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function CameraScreen() {
 
-   const { addSelectedImage } = useCameraStore();
+  const { addSelectedImage } = useCameraStore();
 
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
@@ -94,6 +95,25 @@ export default function CameraScreen() {
     );
   }
 
+  const onPickImages = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      // allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+      allowsMultipleSelection: true,
+      selectionLimit: 5
+    });
+
+    if (result.canceled) return;
+
+    console.log(result.assets)
+    result.assets.forEach(asset => {
+      addSelectedImage(asset.uri);
+    });
+    router.dismiss();
+  }
+
   function toggleCameraFacing() {
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   }
@@ -133,8 +153,7 @@ export default function CameraScreen() {
 
         <FlipCameraButton onPress={toggleCameraFacing} />
 
-        {/* TODO:  GalleryButton */}
-        <GalleryButton />
+        <GalleryButton onPress={onPickImages} />
 
         <ReturnCancelButton onPress={onReturnCancel} />
 

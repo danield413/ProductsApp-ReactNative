@@ -62,7 +62,10 @@ const ProductScreen = () => {
   const product = productQuery.data!;
 
   return (
-    <Formik initialValues={product} onSubmit={productMutation.mutate}>
+    <Formik initialValues={product} onSubmit={(productLike) => productMutation.mutate({
+      ...productLike,
+      images: [...product.images, ...selectedImages],
+    })}>
       {({ values, handleSubmit, handleChange, setFieldValue }) => (
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
