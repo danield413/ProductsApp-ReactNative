@@ -36,7 +36,7 @@ const uploadImage = async (image: string): Promise<string> => {
     name: image.split('/').pop()
   });
 
-  const { data } = await productsAPI.post<{ image: string}>('/files/upload', formData, {
+  const { data } = await productsAPI.post<{ image: string}>('/files/product', formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
